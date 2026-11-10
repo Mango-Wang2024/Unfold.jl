@@ -1,6 +1,6 @@
 # [![Unfold.jl EEG toolbox](https://github.com/unfoldtoolbox/Unfold.jl/assets/10183650/3cbe57c1-e1a7-4150-817a-ce3dcc844485)](https://github.com/unfoldtoolbox/Unfold.jl)
 
-This fork includes [UnfoldPenalizedSplines.jl](lib/UnfoldPenalizedSplines), a companion package for additive cubic splines with REML smoothing through MixedModels.jl. It uses Unfold's existing formula, custom-solver and prediction interfaces; the original Unfold source functions are unchanged. The package includes the research project's two-predictor example and saved data.
+The penalized-spline integration is maintained in the standalone [UnfoldPenalizedSplines.jl](https://github.com/Mango-Wang2024/UnfoldPenalizedSplines.jl) companion package, which depends on standard Unfold. See that repository for the implementation and example.
 
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://unfoldtoolbox.github.io/UnfoldDocs/Unfold.jl/stable/)
 [![In development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://unfoldtoolbox.github.io/UnfoldDocs/Unfold.jl/dev/)
