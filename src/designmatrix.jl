@@ -351,7 +351,7 @@ Setting the optional second args to false, will return the modelmatrix without t
 """
 function StatsModels.modelmatrix(uf::UnfoldLinearModelContinuousTime, basisfunction = true)
     if basisfunction
-        return modelmatrix(designmatrix(uf))
+        return modelmatrix(formulas(uf), modelmatrix(designmatrix(uf)))
         #return hcat(modelmatrix(designmatrix(uf))...)
     else
         # replace basisfunction with non-timeexpanded one
@@ -368,10 +368,36 @@ function StatsModels.modelmatrix(uf::UnfoldLinearModelContinuousTime, basisfunct
 end
 
 modelcols_nobasis(f::FormulaTerm, tbl::AbstractDataFrame) = modelcols(f.rhs.term, tbl)
-StatsModels.modelmatrix(uf::UnfoldModel) = modelmatrix(designmatrix(uf))#modelmatrix(uf.design,uf.designmatrix.events)
-StatsModels.modelmatrix(d::AbstractDesignMatrix) = modelmatrices(d)
+StatsModels.modelmatrix(uf::UnfoldModel) =
+    modelmatrix(formulas(uf), modelmatrix(designmatrix(uf)))
+StatsModels.modelmatrix(d::AbstractDesignMatrix) = modelmatrix([d.formula], modelmatrices(d))
 StatsModels.modelmatrix(d::Vector{<:AbstractDesignMatrix}) =
     extend_to_larger(modelmatrices.(d))
+
+# Formula terms can attach solver information to an assembled numerical matrix.
+# Ordinary terms return the matrix directly. Channel-specific designs keep one
+# matrix per channel, while continuous designs share one matrix across events.
+StatsModels.modelmatrix(form::FormulaTerm, X::AbstractMatrix) = modelmatrix([form], X)
+StatsModels.modelmatrix(form::FormulaTerm, X::AbstractVector) =
+    modelmatrix.(Ref(form), X)
+StatsModels.modelmatrix(forms::AbstractVector{<:FormulaTerm}, X) = X
+StatsModels.modelmatrix(forms::AbstractVector{<:FormulaTerm}, X::AbstractVector) =
+    modelmatrix.(forms, X)
+function StatsModels.modelmatrix(forms::AbstractVector{<:FormulaTerm}, X::AbstractMatrix)
+    for form in forms
+        X = modelmatrix(StatsModels.collect_matrix_terms(form.rhs), X, forms)
+    end
+    return X
+end
+StatsModels.modelmatrix(term::AbstractTerm, X::AbstractMatrix, forms) = X
+function StatsModels.modelmatrix(term::StatsModels.MatrixTerm, X::AbstractMatrix, forms)
+    for t in term.terms
+        X = modelmatrix(t, X, forms)
+    end
+    return X
+end
+StatsModels.modelmatrix(term::TimeExpandedTerm, X::AbstractMatrix, forms) =
+    modelmatrix(term.term, X, forms)
 
 
 """

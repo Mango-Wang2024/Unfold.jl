@@ -1,6 +1,6 @@
 # [![Unfold.jl EEG toolbox](https://github.com/unfoldtoolbox/Unfold.jl/assets/10183650/3cbe57c1-e1a7-4150-817a-ce3dcc844485)](https://github.com/unfoldtoolbox/Unfold.jl)
 
-The penalized-spline integration is maintained in the standalone [UnfoldPenalizedSplines.jl](https://github.com/Mango-Wang2024/UnfoldPenalizedSplines.jl) companion package, which depends on standard Unfold. See that repository for the implementation and example.
+The penalized-spline integration is maintained in the standalone [UnfoldPenalizedSplines.jl](https://github.com/Mango-Wang2024/UnfoldPenalizedSplines.jl) companion package. This copy adds a formula-aware `modelmatrix` connection in `src/designmatrix.jl`, allowing terms to return a matrix adapter handled by their own `solver_default` methods. See the companion package for the implementation and example.
 
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://unfoldtoolbox.github.io/UnfoldDocs/Unfold.jl/stable/)
 [![In development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://unfoldtoolbox.github.io/UnfoldDocs/Unfold.jl/dev/)
